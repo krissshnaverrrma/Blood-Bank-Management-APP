@@ -25,7 +25,7 @@ You need **Python 3.10+** and `pip` installed.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [YOUR_REPOSITORY_URL_HERE]
+    git clone [https://github.com/krissshnaverrrma/Blood-Bank-Management-APP](https://github.com/krissshnaverrrma/Blood-Bank-Management-APP)
     cd Blood-Management-APP
     ```
 
