@@ -17,7 +17,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////C:/BloodAppDB/bloodbank.db'
+DB_URL = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.secret_key = os.getenv("SECRET_KEY", "fallback_default_key")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
