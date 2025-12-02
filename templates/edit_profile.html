@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - Blood Management APP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="col-md-10 col-lg-9">
+        <div class="glass-card p-5">
+
+            <h3 class="text-white fw-bold mb-5 ps-2 border-start border-4 border-danger">
+                &nbsp;Update Profile
+            </h3>
+
+            <form method="POST" enctype="multipart/form-data" id="editProfileForm">
+                <div class="row">
+
+                    <div
+                        class="col-md-4 text-center mb-5 mb-md-0 border-end border-secondary border-opacity-10 pe-md-4">
+                        <div class="position-relative d-inline-block mb-4">
+                            <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_image) }}"
+                                alt="Profile" class="rounded-circle shadow-lg object-fit-cover" id="profilePreview"
+                                style="width: 150px; height: 150px; border: 4px solid rgba(255,255,255,0.1);">
+
+                            <input type="file" name="profile_pic" id="fileInput" accept="image/*" class="d-none"
+                                onchange="previewImage(event)">
+                            <input type="hidden" name="remove_photo" id="removePhotoFlag" value="false">
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 px-4">
+                            <button type="button" id="photoActionButton"
+                                class="btn btn-outline-white btn-sm rounded-pill"
+                                onclick="document.getElementById('fileInput').click();">
+                                <i class="fa-solid fa-camera me-2"></i> Change Photo
+                            </button>
+
+                            <button type="button" id="removePhotoButton"
+                                class="btn btn-outline-danger btn-sm rounded-pill" onclick="removeProfilePhoto()">
+                                <i class="fa-solid fa-trash me-2"></i> Remove Photo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 ps-md-5">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Full Name</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-id-card input-icon"></i>
+                                    <input type="text" name="full_name" class="form-control"
+                                        value="{{ current_user.full_name or '' }}" placeholder="Your Full Name">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Email
+                                    Address</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-envelope input-icon"></i>
+                                    <input type="email" name="email" class="form-control"
+                                        value="{{ current_user.email }}" placeholder="name@example.com">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">About Me</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-pen input-icon" style="top: 20px;"></i>
+                                    <textarea name="bio" class="form-control pt-3" rows="4"
+                                        placeholder="Tell us a bit about yourself..."
+                                        style="border-radius: 20px;">{{ current_user.bio or '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-3 mt-5">
+                            <a href="{{ url_for('profile') }}" class="btn btn-outline-white px-4">Discard</a>
+                            <button type="submit" class="btn btn-solid-white">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-5 pt-4 border-top border-secondary border-opacity-10 text-center text-md-start">
+                <a href="{{ url_for('delete_account') }}" class="btn btn-outline-danger w-100 py-2">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Permanently Delete Account
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const defaultImageSrc = "{{ url_for('static', filename='profile_pics/default.svg') }}";
+    const removeButton = document.getElementById('removePhotoButton');
+    const photoActionButton = document.getElementById('photoActionButton');
+    const profilePreview = document.getElementById('profilePreview');
+
+    function updateButtonState() {
+        const isDefault = profilePreview.src.includes('default.svg');
+
+        if (isDefault) {
+            removeButton.style.display = 'none';
+            photoActionButton.innerHTML = '<i class="fa-solid fa-plus me-2"></i> Add Photo';
+        } else {
+            removeButton.style.display = '';
+            photoActionButton.innerHTML = '<i class="fa-solid fa-camera me-2"></i> Change Photo';
+        }
+    }
+
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            profilePreview.src = reader.result;
+            updateButtonState();
+        };
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+        document.getElementById('removePhotoFlag').value = 'false';
+    }
+
+    function removeProfilePhoto() {
+        profilePreview.src = defaultImageSrc;
+        document.getElementById('fileInput').value = "";
+        document.getElementById('removePhotoFlag').value = 'true';
+        updateButtonState();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateButtonState);
+</script>
+{% endblock %}

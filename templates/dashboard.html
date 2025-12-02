@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Blood Management APP {% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-white mb-1">Dashboard Overview</h2>
+            <p class="text-white-50 mb-0">Real-Time Insights and Management.</p>
+        </div>
+        <a href="{{ url_for('add_donor') }}" class="btn btn-solid-white">
+            <i class="fa-solid fa-plus me-2"></i> Add New Donor
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+
+            <div class="glass-card p-4 mb-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="text-white-50 small text-uppercase fw-bold mb-1">Total Donors</p>
+                    <h1 class="fw-bold text-white mb-0">{{ donors|length }}</h1>
+                </div>
+                <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger">
+                    <i class="fa-solid fa-users fa-2x"></i>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 h-100">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                    <h5 class="fw-bold text-white mb-0">Current Stock</h5>
+                    <i class="fa-solid fa-layer-group text-white-50"></i>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% for item in stock %}
+                    <div class="flex-grow-1 p-3 rounded text-center border border-secondary border-opacity-25"
+                        style="background: rgba(255,255,255,0.05); min-width: 80px;">
+                        <h4 class="fw-bold text-danger mb-0">{{ item.blood_group }}</h4>
+                        <small class="text-white-50">{{ item.units }} Units</small>
+                    </div>
+                    {% else %}
+                    <div class="text-center w-100 py-4 text-white-50">
+                        <i class="fa-solid fa-box-open fa-2x mb-2 opacity-50"></i>
+                        <p>Inventory is empty.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold text-white mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                    <i class="fa-solid fa-clock-rotate-left me-2 text-danger"></i> Recent Activity
+                </h5>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle bg-transparent mb-0"
+                        style="--bs-table-bg: transparent;">
+                        <thead>
+                            <tr class="text-white-50 small text-uppercase">
+                                <th class="fw-bold">Patient</th>
+                                <th class="fw-bold">Hospital</th>
+                                <th class="fw-bold">Group</th>
+                                <th class="fw-bold">Date</th>
+                                <th class="text-end fw-bold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in transactions %}
+                            <tr>
+                                <td class="fw-bold">{{ t.patient_name }}</td>
+                                <td class="text-white-50">{{ t.hospital_name }}</td>
+                                <td><span
+                                        class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 rounded-pill px-3">{{
+                                        t.blood_group }}</span></td>
+                                <td class="text-white-50 small">{{ t.date.strftime('%d %b, %Y') }}</td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('view_invoice', id=t.id) }}"
+                                        class="btn btn-sm btn-outline-white rounded-pill px-3">
+                                        Invoice
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-white-50">No transactions yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="fw-bold text-white mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                    <i class="fa-solid fa-address-book me-2 text-success"></i> Donor Directory
+                </h5>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle bg-transparent mb-0"
+                        style="--bs-table-bg: transparent;">
+                        <thead>
+                            <tr class="text-white-50 small text-uppercase">
+                                <th class="fw-bold">Name</th>
+                                <th class="fw-bold">Group</th>
+                                <th class="fw-bold">Contact</th>
+                                <th class="fw-bold">Last Donation</th>
+                                <th class="text-end fw-bold">Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donor in donors %}
+                            <tr>
+                                <td class="fw-bold">{{ donor.name }}</td>
+                                <td><span class="fw-bold text-danger">{{ donor.blood_group }}</span></td>
+                                <td class="text-white-50 small">{{ donor.phone }}</td>
+                                <td class="text-white-50 small">{{ donor.last_donation_date or 'Never' }}</td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('donate_blood', id=donor.id) }}"
+                                        class="btn btn-sm btn-outline-success rounded-pill me-1" title="Add Donation">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_donor', id=donor.id) }}"
+                                        class="btn btn-sm btn-outline-danger rounded-pill"
+                                        onclick="return confirm('Remove donor?')" title="Delete">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-white-50">No donors registered.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Issue Blood - Blood Management APP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="col-md-8 col-lg-6">
+
+        <div class="glass-card p-5" id="step1">
+            <div class="text-center mb-5">
+                <div class="d-inline-block p-3 rounded-circle bg-danger bg-opacity-10 mb-3">
+                    <i class="fa-solid fa-file-invoice-dollar fa-3x text-danger"></i>
+                </div>
+                <h2 class="text-white fw-bold">Issue Blood</h2>
+                <p class="text-white-50 small">Enter patient details. Processing Fee: ₹500/unit.</p>
+            </div>
+
+            <form id="issueForm" onsubmit="goToPayment(event)">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Patient Name</label>
+                        <div class="position-relative">
+                            <i class="fa-solid fa-hospital-user input-icon"></i>
+                            <input type="text" id="patientName" class="form-control" placeholder="Enter patient name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Hospital Name</label>
+                        <div class="position-relative">
+                            <i class="fa-solid fa-hospital input-icon"></i>
+                            <input type="text" id="hospitalName" class="form-control" placeholder="Enter hospital name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Blood Group</label>
+                        <div class="position-relative">
+                            <i class="fa-solid fa-droplet input-icon"></i>
+                            <select id="bloodGroup" class="form-select" required>
+                                <option value="" disabled selected>Select Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="text-white-50 small fw-bold text-uppercase mb-2 ms-2">Units</label>
+                        <div class="position-relative">
+                            <i class="fa-solid fa-layer-group input-icon"></i>
+                            <input type="number" id="units" class="form-control" min="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-solid-white w-100 py-3 shadow">
+                            Calculate & Pay <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-solid-white w-100 py-3 shadow">
+                            Cancel and Return to Dashboard
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="glass-card p-5 text-center d-none" id="step2">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="text-white fw-bold mb-0">Collect Payment</h4>
+                <button onclick="goBack()" class="btn btn-sm btn-outline-white rounded-circle"
+                    style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <div
+                class="bg-white bg-opacity-10 rounded p-3 mb-4 text-white text-start border border-secondary border-opacity-25">
+                <div class="d-flex justify-content-between">
+                    <span>Blood Group:</span>
+                    <strong id="summaryGroup" class="text-danger">A+</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Units:</span>
+                    <strong id="summaryUnits">1</strong>
+                </div>
+                <hr class="border-light opacity-25 my-2">
+                <div class="d-flex justify-content-between fs-4 fw-bold">
+                    <span>Total:</span>
+                    <span class="text-success">₹<span id="totalAmount">500</span></span>
+                </div>
+            </div>
+
+            <div class="bg-white p-3 rounded mb-4 shadow-lg d-inline-block position-relative">
+                <img id="qrImage" src="" width="200" height="200" alt="QR Code">
+            </div>
+
+            <p class="text-white-50 small mb-4">
+                Scan via <strong class="text-white">Google Pay / PhonePe</strong> to pay.
+            </p>
+
+            <div class="text-start mb-4">
+                <label class="text-white small fw-bold ms-1 mb-1">Google Transaction ID (GTI) <span
+                        class="text-danger">*</span></label>
+                <div class="position-relative">
+                    <i class="fa-solid fa-receipt input-icon"></i>
+                    <input type="text" id="utrNumber" class="form-control" placeholder="e.g. CICAgK..."
+                        oninput="validateGTI(this)">
+                </div>
+                <small class="text-white-50 ms-2">Enter the Transaction ID from Google Pay.</small>
+            </div>
+
+            <button id="confirmBtn" onclick="finalizeIssue()" class="btn btn-solid-white w-100 py-3 shadow" disabled>
+                <i class="fa-solid fa-check-circle me-2"></i> Verify & Issue Blood
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let formData = {};
+
+    function goToPayment(e) {
+        e.preventDefault();
+
+        formData.patient = document.getElementById('patientName').value;
+        formData.hospital = document.getElementById('hospitalName').value;
+        formData.group = document.getElementById('bloodGroup').value;
+        formData.units = document.getElementById('units').value;
+
+        const total = formData.units * 500;
+
+        document.getElementById('summaryGroup').innerText = formData.group;
+        document.getElementById('summaryUnits').innerText = formData.units;
+        document.getElementById('totalAmount').innerText = total;
+
+        document.getElementById('qrImage').src = "{{ url_for('generate_qr') }}?amount=" + total + "&t=" + new Date().getTime();
+
+        document.getElementById('step1').classList.add('d-none');
+        document.getElementById('step2').classList.remove('d-none');
+    }
+
+    function goBack() {
+        document.getElementById('step2').classList.add('d-none');
+        document.getElementById('step1').classList.remove('d-none');
+    }
+
+    function validateGTI(input) {
+        const btn = document.getElementById('confirmBtn');
+        const val = input.value.trim();
+
+        if (val.length >= 8) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+        }
+    }
+
+    async function finalizeIssue() {
+        const btn = document.getElementById('confirmBtn');
+        btn.innerHTML = '<div class="spinner-border spinner-border-sm"></div> Verifying...';
+        btn.disabled = true;
+
+        const utr = document.getElementById('utrNumber').value;
+
+        try {
+            const response = await fetch("{{ url_for('issue_blood') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    patient: formData.patient,
+                    hospital: formData.hospital,
+                    blood_group: formData.group,
+                    units: formData.units,
+                    utr: utr
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                window.location.href = result.redirect;
+            } else {
+                alert(result.message);
+                btn.innerHTML = 'Verify & Issue Blood';
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert("Network Error. Please try again.");
+            btn.innerHTML = 'Verify & Issue Blood';
+            btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

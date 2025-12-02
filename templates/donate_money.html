@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Support - Blood Management APP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="col-md-8 col-lg-6">
+
+        <div class="glass-card p-5" id="detailsSection">
+            <div class="text-center mb-5">
+                <div class="d-inline-block p-3 rounded-circle bg-danger bg-opacity-10 mb-3">
+                    <i class="fa-solid fa-hand-holding-heart fa-3x text-danger"></i>
+                </div>
+                <h2 class="text-white fw-bold">Make a Donation</h2>
+                <p class="text-white-50 small">Your contribution directly supports our life-saving operations.</p>
+            </div>
+
+            <form id="donorForm" onsubmit="proceedToPayment(event)">
+                <div class="row g-4">
+
+                    <div class="col-12">
+                        <label class="text-white small fw-bold ms-2 text-uppercase mb-2">Donation Amount</label>
+                        <div class="position-relative">
+                            <span class="position-absolute text-white fw-bold"
+                                style="left: 20px; top: 14px; font-size: 1.2rem;">₹</span>
+                            <input type="number" id="customAmount" class="form-control text-center fw-bold"
+                                placeholder="Enter amount (e.g. 500)" style="font-size: 1.2rem; padding-left: 30px;"
+                                required min="1">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="text-white-50 small fw-bold ms-2">Full Name</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-user input-icon"></i>
+                                    <input type="text" id="donorName" class="form-control" placeholder="Your Full Name"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-white-50 small fw-bold ms-2">Email Address</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-envelope input-icon"></i>
+                                    <input type="email" id="donorEmail" class="form-control"
+                                        placeholder="name@example.com" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-white-50 small fw-bold ms-2">Phone Number</label>
+                                <div class="position-relative">
+                                    <i class="fa-solid fa-phone input-icon"></i>
+                                    <input type="tel" id="donorPhone" class="form-control" placeholder="10-digit number"
+                                        pattern="[0-9]{10}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn btn-solid-white w-100 py-3 shadow">
+                            Generate QR Code <i class="fa-solid fa-qrcode ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="glass-card p-5 text-center d-none" id="paymentSection">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="text-white fw-bold mb-0">Scan to Pay</h4>
+                <button onclick="showDetails()" class="btn btn-sm btn-outline-white rounded-circle"
+                    style="width: 32px; height: 32px; padding: 0;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <h1 class="text-white display-4 fw-bold mb-4">₹<span id="displayAmount">0</span></h1>
+
+            <div class="bg-white p-3 rounded mb-4 shadow-lg d-inline-block position-relative">
+                <img id="qrImage" src="" width="240" height="240" alt="QR Code">
+            </div>
+
+            <div class="d-md-none mb-4">
+                <p class="text-white-50 small mb-2">Tap to Pay on Mobile:</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a id="payLinkGPay" href="#" class="btn btn-sm btn-light border rounded-pill px-3"><img
+                            src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg"
+                            height="15"></a>
+                    <a id="payLinkPhonePe" href="#" class="btn btn-sm btn-light border rounded-pill px-3"><img
+                            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/PhonePe_Logo.svg" height="15"></a>
+                    <a id="payLinkPaytm" href="#" class="btn btn-sm btn-light border rounded-pill px-3"><img
+                            src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg"
+                            height="15"></a>
+                </div>
+            </div>
+
+            <div class="text-start mb-4">
+                <label class="text-white small fw-bold ms-1 mb-1">Enter UPI Transaction ID (UTR)</label>
+                <input type="text" id="utrNumber" class="form-control text-center" placeholder="12-digit UTR Number"
+                    maxlength="12" oninput="validateUTR(this)">
+                <small class="text-white-50 ms-1">Found in your payment app history.</small>
+            </div>
+
+            <button id="confirmBtn" onclick="confirmPayment()" class="btn btn-solid-white w-100 py-3 shadow-lg"
+                disabled>
+                <i class="fa-solid fa-check-circle me-2"></i> Verify Payment
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let donorData = {};
+    const myUPI = "krishna1290verma-1@oksbi";
+    const myName = "Krishna Verma";
+
+    function proceedToPayment(event) {
+        event.preventDefault();
+
+        const amount = document.getElementById('customAmount').value;
+        donorData.name = document.getElementById('donorName').value;
+        donorData.phone = document.getElementById('donorPhone').value;
+        donorData.email = document.getElementById('donorEmail').value;
+
+        document.getElementById('displayAmount').innerText = amount;
+        document.getElementById('qrImage').src = "{{ url_for('generate_qr') }}?amount=" + amount + "&t=" + new Date().getTime();
+
+        const upiLink = `upi://pay?pa=${myUPI}&pn=${myName}&am=${amount}&cu=INR`;
+        document.getElementById('payLinkGPay').href = upiLink;
+        document.getElementById('payLinkPhonePe').href = upiLink;
+        document.getElementById('payLinkPaytm').href = upiLink;
+
+        document.getElementById('detailsSection').classList.add('d-none');
+        document.getElementById('paymentSection').classList.remove('d-none');
+    }
+
+    function showDetails() {
+        document.getElementById('paymentSection').classList.add('d-none');
+        document.getElementById('detailsSection').classList.remove('d-none');
+    }
+
+    function validateUTR(input) {
+        const btn = document.getElementById('confirmBtn');
+        btn.disabled = input.value.length < 10;
+        btn.classList.toggle('opacity-50', input.value.length < 10);
+    }
+
+    async function confirmPayment() {
+        const amount = document.getElementById('displayAmount').innerText;
+        const utr = document.getElementById('utrNumber').value;
+        const btn = document.getElementById('confirmBtn');
+
+        btn.innerHTML = 'Verifying...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch("{{ url_for('confirm_donation') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: amount,
+                    utr: utr,
+                    name: donorData.name,
+                    email: donorData.email
+                })
+            });
+
+            if (response.ok) {
+                alert("Payment Verified! Receipt sent.");
+                window.location.href = "{{ url_for('dashboard') }}";
+            } else {
+                alert("Verification failed.");
+                btn.innerHTML = 'Verify Payment';
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert("Network Error");
+        }
+    }
+</script>
+{% endblock %}

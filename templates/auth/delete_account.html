@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Account - Blood Management APP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="col-md-7 col-lg-6">
+        <div class="glass-card text-center p-5">
+            <h2 class="text-white app-title mb-2">
+                <i class="fa-solid fa-droplet text-white"></i>
+                Blood Management APP
+            </h2>
+            <h3 class="text-danger fw-bold mb-3">Confirm Account Deletion</h3>
+            <p class="text-white-50 small mb-4">
+                This action is permanent and cannot be undone. All user data will be removed from the system.
+            </p>
+
+            <hr class="border-secondary mb-5">
+
+            <form method="POST">
+
+                <button type="submit" class="btn btn-outline-white w-100 mb-4 py-3">
+                    <span class="text-danger fw-bold">Permanent Delete Account</span>
+                </button>
+            </form>
+
+            <a href="{{ url_for('profile') }}" class="btn btn-solid-white w-100 mb-3">
+                Cancel and Go Back
+            </a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

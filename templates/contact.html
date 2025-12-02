@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact - Blood-Management-APP{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row align-items-center g-5">
+
+        <div class="col-lg-5 text-start">
+
+            <h1 class="display-4 fw-bold text-white mb-3" style="text-shadow: 0 4px 10px rgba(0,0,0,0.8);">
+                Let's <span class="text-danger">Connect.</span>
+            </h1>
+            <p class="lead text-white-50 mb-5">
+                We are here to help and answer any question you might have. We look forward to hearing from you.
+            </p>
+
+            <div class="d-flex flex-column gap-4">
+
+                <div class="d-flex align-items-center">
+                    <div class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 50px; height: 50px; cursor: default;">
+                        <i class="fa-solid fa-user-tie fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="fw-bold text-white mb-0">Krishna Verma</h6>
+                        <small class="text-white-50">Lead Developer</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 50px; height: 50px; cursor: default;">
+                        <i class="fa-solid fa-envelope fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="fw-bold text-white mb-0">Email Support</h6>
+                        <small class="text-white-50">krishnav24-cs@sanskar.org</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 50px; height: 50px; cursor: default;">
+                        <i class="fa-solid fa-location-dot fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="fw-bold text-white mb-0">Headquarters</h6>
+                        <small class="text-white-50">Hapur, India</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-5 pt-4 border-top border-secondary w-75">
+                <p class="text-white-50 mb-3 small fw-bold text-uppercase tracking-wide">Follow Socials</p>
+                <div class="d-flex gap-3">
+                    <a href="https://github.com/krissshnaverrrma" target="_blank"
+                        class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px;">
+                        <i class="fa-brands fa-github fa-lg"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/krishna-verma-43aa85315/" target="_blank"
+                        class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px;">
+                        <i class="fa-brands fa-linkedin-in fa-lg"></i>
+                    </a>
+                    <a href="https://www.instagram.com/krissssshnaverrrrrma/" target="_blank"
+                        class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px;">
+                        <i class="fa-brands fa-instagram fa-lg"></i>
+                        <a href="https://www.facebook.com/krissssshnaverrrrrma/" target="_blank"
+                            class="btn btn-outline-white rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 45px; height: 45px;">
+                            <i class="fa-brands fa-facebook fa-lg"></i>
+                        </a>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-7">
+            <div class="glass-card p-5 shadow-lg">
+                <h3 class="fw-bold text-white mb-4">Send a Message</h3>
+
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="text-white-50 small mb-1 ms-2">Your Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Krishna Verma" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-white-50 small mb-1 ms-2">Email Address</label>
+                            <input type="email" name="email" class="form-control"
+                                placeholder="krishnav24-cs@sanskar.org" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-white-50 small mb-1 ms-2">Subject</label>
+                            <input type="text" name="subject" class="form-control" placeholder="How can we help?"
+                                required>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-white-50 small mb-1 ms-2">Message</label>
+                            <textarea name="message" class="form-control" rows="5"
+                                placeholder="Tell us more about your inquiry..." style="border-radius: 20px;"
+                                required></textarea>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-solid-white w-100 py-3 shadow">
+                                Send Message <i class="fa-solid fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

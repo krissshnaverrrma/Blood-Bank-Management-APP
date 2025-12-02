@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Blood Management APP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="col-md-9 col-lg-8">
+        <div class="glass-card p-5">
+
+            <div class="row align-items-center">
+
+                <div
+                    class="col-md-4 text-center text-md-start border-end border-secondary border-opacity-25 pe-md-5 mb-4 mb-md-0">
+
+                    <div class="mb-3 d-inline-block p-1 border border-secondary rounded-circle">
+                        <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_image) }}"
+                            alt="{{ current_user.username }}" class="rounded-circle"
+                            style="width: 150px; height: 150px; object-fit: cover;">
+                    </div>
+
+                    <h3 class="fw-bold text-white mb-1 text-truncate">{{ current_user.username }}</h3>
+                    <p class="text-white-50 small mb-4 text-truncate">{{ current_user.email }}</p>
+
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-solid-white w-100 py-2 shadow-sm">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Edit Profile
+                    </a>
+                </div>
+
+                <div class="col-md-8 ps-md-5">
+
+                    <h5 class="text-white fw-bold border-bottom border-secondary border-opacity-25 pb-2 mb-4">
+                        User Details
+                    </h5>
+
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <label class="text-white-50 small text-uppercase fw-bold mb-1">Blood Group</label>
+                            <p class="fs-4 text-danger fw-bold mb-0">
+                                {{ current_user.blood_group or 'Not Set' }}
+                            </p>
+                        </div>
+
+                        <div class="col-6">
+                            <label class="text-white-50 small text-uppercase fw-bold mb-1">Full Name</label>
+                            <p class="text-white fs-5 mb-0 text-truncate">
+                                {{ current_user.full_name or 'Not Provided' }}
+                            </p>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="text-white-50 small text-uppercase fw-bold mb-2">About Me</label>
+                            <div class="p-3 rounded"
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                                <p class="text-light opacity-90 mb-0" style="line-height: 1.6; min-height: 60px;">
+                                    {{ current_user.bio or 'No bio added yet. Click Edit Profile to introduce yourself.'
+                                    }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

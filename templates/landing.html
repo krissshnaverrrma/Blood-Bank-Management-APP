@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - Blood Management APP {% endblock %}
+
+{% block content %}
+
+<div class="px-4 py-5 my-5 text-center">
+
+    <h1 class="display-3 fw-bold text-white mb-4" style="text-shadow: 0 5px 15px rgba(0,0,0,0.8);">
+        <span class="text-blood-dark">Blood Bank</span> Management-APP
+    </h1>
+
+    <div class="col-lg-8 mx-auto">
+        <p class="fs-5 mb-5 text-light opacity-90" style="line-height: 1.8; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">
+            Blood-Bank-Management-APP is a next-generation platform engineered to streamline blood bank operations.
+            From precise donor tracking to real-time inventory control and compliance reporting,
+            we empower medical institutions to save lives with unparalleled efficiency and safety.
+        </p>
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-solid-white btn-equal-landing" style="min-width: 280px;">
+            <i class="fa-solid fa-chart-line me-2"></i> GO to Dashboard
+        </a>
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center gap-4 mt-5">
+
+        <a href="{{ url_for('login') }}" class="btn btn-solid-white btn-equal-landing">
+            Sign In
+        </a>
+
+        <a href="{{ url_for('about') }}" class="btn btn-solid-white btn-equal-landing">
+            Continue Reading
+        </a>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="row g-4 py-5 row-cols-1 row-cols-lg-3 justify-content-center">
+    <div class="col d-flex align-items-start text-start p-4">
+        <div class="text-white display-5 me-4"><i class="fa-solid fa-users-gear"></i></div>
+        <div>
+            <h4 class="fw-bold text-white mb-2">Advanced Donor CRM</h4>
+            <p class="text-white-50" style="line-height: 1.6;">Securely manage donor profiles, automate eligibility
+                checks, and maintain detailed history.</p>
+        </div>
+    </div>
+    <div class="col d-flex align-items-start text-start p-4">
+        <div class="text-white display-5 me-4"><i class="fa-solid fa-droplet"></i></div>
+        <div>
+            <h4 class="fw-bold text-white mb-2">Real-Time Inventory</h4>
+            <p class="text-white-50" style="line-height: 1.6;">Live stock monitoring with instant updates across all
+                Blood Groups.</p>
+        </div>
+    </div>
+    <div class="col d-flex align-items-start text-start p-4">
+        <div class="text-white display-5 me-4"><i class="fa-solid fa-file-circle-check"></i></div>
+        <div>
+            <h4 class="fw-bold text-white mb-2">Seamless Transactions</h4>
+            <p class="text-white-50" style="line-height: 1.6;">Process hospital requests efficiently and generate
+                compliant invoices.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

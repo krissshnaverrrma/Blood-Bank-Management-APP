@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction History - Blood Management APP {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="glass-card p-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="text-white fw-bold mb-1">Transaction History</h2>
+                <p class="text-white-50 small mb-0">Archive of all blood units issued, payments, and invoices.</p>
+            </div>
+
+            <a href="{{ url_for('export_transactions_csv') }}" class="btn btn-outline-white btn-sm rounded-pill px-3">
+                <i class="fa-solid fa-download me-2"></i> Export CSV
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle bg-transparent" style="--bs-table-bg: transparent;">
+                <thead>
+                    <tr class="text-white-50 small text-uppercase border-bottom border-secondary border-opacity-25">
+                        <th class="py-3">Invoice ID</th>
+                        <th class="py-3">Patient</th>
+                        <th class="py-3">Hospital</th>
+                        <th class="py-3">Group / Units</th>
+                        <th class="py-3 text-end">Amount</th>
+                        <th class="py-3 text-center">Status</th>
+                        <th class="py-3 text-end">UTR / Ref</th>
+                        <th class="py-3 text-end">Date</th>
+                        <th class="py-3 text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td class="text-white-50">#{{ "%04d" | format(t.id) }}</td>
+
+                        <td class="fw-bold text-white">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center me-2"
+                                    style="width: 30px; height: 30px;">
+                                    <i class="fa-solid fa-user-injured text-white-50 small"></i>
+                                </div>
+                                {{ t.patient_name }}
+                            </div>
+                        </td>
+
+                        <td class="text-white-50">{{ t.hospital_name }}</td>
+
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span
+                                    class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill">
+                                    {{ t.blood_group }}
+                                </span>
+                                <span class="text-white-50 small">x {{ t.units }}</span>
+                            </div>
+                        </td>
+
+                        <td class="text-end fw-bold text-white">₹{{ t.total_amount }}</td>
+
+                        <td class="text-center">
+                            {% if t.payment_status == 'Paid' %}
+                            <span
+                                class="badge bg-success text-success bg-opacity-10 border border-success border-opacity-25 rounded-pill px-3">
+                                <i class="fa-solid fa-check me-1"></i> PAID
+                            </span>
+                            {% else %}
+                            <span
+                                class="badge bg-warning text-warning bg-opacity-10 border border-warning border-opacity-25 rounded-pill px-3">
+                                PENDING
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            {% if t.utr_number %}
+                            <span class="font-monospace text-white-50 small" title="{{ t.utr_number }}">
+                                {{ t.utr_number[:12] }}...
+                            </span>
+                            {% else %}
+                            <span class="text-white-25 small">-</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end text-white-50 small">{{ t.date.strftime('%d %b, %Y') }}</td>
+
+                        <td class="text-end">
+                            <a href="{{ url_for('view_invoice', id=t.id) }}"
+                                class="btn btn-sm btn-outline-white rounded-circle"
+                                style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
+                                title="View Invoice">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center py-5 text-white-50">
+                            <div class="mb-3 opacity-25">
+                                <i class="fa-solid fa-file-invoice fa-3x"></i>
+                            </div>
+                            <p>No transactions found in the database.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
