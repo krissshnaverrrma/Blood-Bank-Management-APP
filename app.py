@@ -442,8 +442,9 @@ def confirm_donation():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+with app.app_context():
+    db.create_all()
+    print("✅ Database tables confirmed/created successfully.")
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        print("✅ Database tables confirmed/created successfully.")
     app.run(debug=True)
