@@ -13,6 +13,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+from flask_migrate import Migrate
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
@@ -31,6 +32,11 @@ os.makedirs(os.path.join(app.root_path,
             app.config['UPLOAD_FOLDER']), exist_ok=True)
 db = SQLAlchemy(app)
 mail = Mail(app)
+migrate = Migrate(app, db)
+with app.app_context():
+    db.create_all()
+    print("✅ Database tables confirmed/created successfully.")
+    
 s = URLSafeTimedSerializer(app.secret_key)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -440,11 +446,6 @@ def confirm_donation():
     except Exception as e:
         print(f"PAYMENT ERROR: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
-
-
-with app.app_context():
-    db.create_all()
-    print("✅ Database tables confirmed/created successfully.")
 
 if __name__ == "__main__":
     app.run(debug=True)
