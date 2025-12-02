@@ -15,6 +15,15 @@ A web application built using Python Flask to manage blood donation records, inv
 
 ---
 
+---
+## Screenshot
+Here is the preview of the webite
+![Website_Preview](/static/images/website_preview.jpg)
+
+
+---
+
+---
 ## 🚀 Setup and Run Locally
 
 These instructions will get a copy of the project running on your local machine for development and testing.
