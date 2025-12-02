@@ -340,7 +340,7 @@ def issue_blood():
             db.session.commit()
             return jsonify({
                 "status": "success",
-                "redirect":url_for('transactions'),
+                "redirect": url_for('transactions'),
                 "message": "Blood Issued Successfully"
             })
         except Exception as e:
