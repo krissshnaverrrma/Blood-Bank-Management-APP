@@ -144,6 +144,9 @@ def register():
         if User.query.filter_by(email=email).first():
             flash("Email already exists!", "danger")
             return redirect(url_for('register'))
+        if User.query.filter_by(username=username).first():
+            flash("Username already taken! Please choose another.", "danger")
+            return redirect(url_for('register'))
         hashed_pw = generate_password_hash(password, method='scrypt')
         new_user = User(
             full_name=fullname,
