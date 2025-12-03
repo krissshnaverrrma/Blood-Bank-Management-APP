@@ -19,6 +19,12 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
 DB_URL = os.getenv("DATABASE_URL")
+RENDER_PROD_URL = os.getenv("RENDER_DATABASE_URL")
+if RENDER_PROD_URL:
+    DB_URL = RENDER_PROD_URL.replace("postgres://", "postgresql://")
+    print("✅ Using RENDER_DATABASE_URL (Internal Connection)")
+else:
+    print("✅ Using DATABASE_URL (External/Local Connection)")
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.secret_key = os.getenv("SECRET_KEY", "fallback_default_key")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
