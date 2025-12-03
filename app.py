@@ -36,7 +36,7 @@ migrate = Migrate(app, db)
 with app.app_context():
     db.create_all()
     print("✅ Database tables confirmed/created successfully.")
-    
+
 s = URLSafeTimedSerializer(app.secret_key)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -446,6 +446,7 @@ def confirm_donation():
     except Exception as e:
         print(f"PAYMENT ERROR: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
